@@ -14,10 +14,11 @@ __global__ void selfAdd(float *dPtr, int num)
 int main(void)
 {
     cudaError_t err = cudaSuccess;
-    int size = 2 * 1024 * 1024;
+    int size = 20 * 1024 * 1024;
     float *hPtr = NULL;
     float *dPtr = NULL;
     int blocksPerGrid = (size / sizeof (float) + THREADS_PER_BLOCK - 1) / THREADS_PER_BLOCK;
+    int i;
 
     hPtr = (float *)malloc(size);
     if (!hPtr)
@@ -46,7 +47,8 @@ int main(void)
     }
 
     printf("Start launching kernel\n");
-    selfAdd<<<blocksPerGrid, THREADS_PER_BLOCK>>>(dPtr, size / sizeof (float));
+    for (i = 0; i < 10000; i++)
+        selfAdd<<<blocksPerGrid, THREADS_PER_BLOCK>>>(dPtr, size / sizeof (float));
     err = cudaGetLastError();
     if (err != cudaSuccess)
     {
